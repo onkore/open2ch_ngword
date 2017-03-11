@@ -9,6 +9,10 @@
     "128": "icons/icon_128.png"
   },
 
+  "permissions": [
+    "storage"
+  ],
+
   "content_scripts": [
     {
       "matches": ["http://open.open2ch.net/*"],
