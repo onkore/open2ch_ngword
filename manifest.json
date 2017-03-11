@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Open2ch NG Word",
+  "version": "0.0.1",
+
+  "default_locale": "ja_JP",
+  "description": "Open2ch にNG Word を追加します",
+
+  "icons": {
+    "48": "icons/icon_48.png",
+    "128": "icons/icon_128.png"
+  },
+
+  "permissions": [
+    "http://open.open2ch.net"
+  ],
+
+  "content_scripts": [
+    "matches": ["http://open.open2ch.net/*"],
+    "js": [
+      "src/index.js"
+    ]
+  ]
+}
