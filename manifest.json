@@ -9,16 +9,23 @@
     "128": "icons/icon_128.png"
   },
 
+  "options_page": "pages/options.html",
+
   "permissions": [
-    "storage"
+    "storage",
+    "contextMenus"
   ],
 
   "content_scripts": [
     {
       "matches": ["http://open.open2ch.net/*"],
       "js": [
-        "src/index.js"
+        "build/content_script.bundle.js"
       ]
     }
-  ]
+  ],
+
+  "background": {
+    "scripts": ["build/background.bundle.js"]
+  }
 }
