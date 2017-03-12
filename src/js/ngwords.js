@@ -22,8 +22,6 @@ export default {
 
       chrome.storage.local.set(store, () => {
         alert(`${ngword} をNGワードに登録しました`)
-
-        abornPage()
       })
     })
   }
