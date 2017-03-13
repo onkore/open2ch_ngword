@@ -2,9 +2,9 @@ import path from 'path'
 
 module.exports = {
   entry: {
-    background: path.join(__dirname, 'src/js/background.js'),
-    content_script: path.join(__dirname, 'src/js/content_script.js'),
-    options: path.join(__dirname, 'src/js/options.js')
+    background: path.join(__dirname, 'src/entries/background.js'),
+    content_script: path.join(__dirname, 'src/entries/content_script.js'),
+    options: path.join(__dirname, 'src/entries/options.js')
   },
 
   output: {
