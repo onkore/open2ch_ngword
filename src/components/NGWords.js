@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import NGWord from './NGWord'
+import ClearNGWord from '../containers/ClearNGWord'
 
 export default class NGWords extends React.Component {
   static propTypes = {
@@ -16,7 +16,7 @@ export default class NGWords extends React.Component {
         <h1>NGワード一覧</h1>
         <ul>
           {this.props.ngwords.map((item) =>
-            <NGWord
+            <ClearNGWord
               key={item.ngword}
               {...item}
             />

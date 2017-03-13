@@ -1,8 +1,10 @@
-import { applyMiddleware, createStore } from 'redux'
+import { applyMiddleware, createStore, compose } from 'redux'
 import { wrapStore } from 'react-chrome-redux'
 import createLogger from 'redux-logger'
 import { addNgWord } from '../actions'
 import ngwords from '../libs/ngwords'
+import reducers from '../reducers'
+import { chromeMessaging } from '../middlewares'
 
 const initializeStore = (store) => {
   chrome.storage.local.get({NGWords: []}, (storage) => {
@@ -12,10 +14,12 @@ const initializeStore = (store) => {
   })
 }
 
-const logger = createLogger()
 const store = createStore(
   require('../reducers').default,
-  applyMiddleware(logger)
+  applyMiddleware(
+    createLogger(),
+    chromeMessaging
+  )
 )
 
 initializeStore(store)
@@ -26,8 +30,6 @@ chrome.contextMenus.create({
   title: '"%s" をNGワードに追加する',
   contexts: ['selection'],
   onclick: (info, tab) => {
-    ngwords.add(info.selectionText)
-
-    chrome.tabs.sendMessage(tab.id, {event: 'addNGWord'})
+    store.dispatch(addNgWord(info.selectionText))
   }
 })

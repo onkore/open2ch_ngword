@@ -5,10 +5,8 @@ const ngword = (state = {}, action) => {
         id: action.id,
         ngword: action.ngword
       }
-    case 'REMOVE_NGWORD':
-      console.log(state)
     default:
-      return state;
+      return state
   }
 }
 
@@ -19,12 +17,10 @@ const ngwords = (state = [], action) => {
         ...state,
         ngword(undefined, action)
       ]
+    case 'CLEAR_NGWORDS':
+      return []
     case 'REMOVE_NGWORD':
-      ngword(state, action)
-
-      return [
-        ...state
-      ]
+      return state.filter(s => s.ngword !== action.ngword)
     default:
       return state
   }

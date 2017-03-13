@@ -2,12 +2,13 @@ import React, { PropTypes } from 'react'
 
 export default class NGWord extends React.Component {
   static propTypes = {
-    ngword: PropTypes.string.isRequired
+    ngword: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired
   }
 
   render() {
     return (
-      <li>{this.props.ngword}</li>
+      <li onClick={this.props.onClick.bind(this)}>{this.props.ngword}</li>
     )
   }
 }

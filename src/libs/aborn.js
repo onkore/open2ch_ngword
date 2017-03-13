@@ -4,8 +4,8 @@ export const ABORN = 'あぼーん'
 
 export const abornComment = (dl, ngword) => {
   if (dl.textContent.match(ngword)) {
-    dl.querySelectorAll('dt b').forEach((el) => el.textContent = ABORN)
-    dl.querySelectorAll('dd').forEach((el) => el.textContent = ABORN)
+    dl.dataset.aborn = ngword
+    dl.style.display = 'none'
   }
 }
 
