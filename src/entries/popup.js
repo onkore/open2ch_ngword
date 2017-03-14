@@ -6,6 +6,14 @@ import App from '../components/App'
 
 const store = new Store({portName: 'OPEN2CH_NGWORD'})
 
+store.subscribe(() => {
+  const state = store.getState()
+
+  if (state.length) {
+    chrome.storage.local.set({ state })
+  }
+})
+
 store.ready().then(() => {
   render(
     <Provider store={store}>

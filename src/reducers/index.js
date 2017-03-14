@@ -2,7 +2,6 @@ const ngword = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_NGWORD':
       return {
-        id: action.id,
         ngword: action.ngword
       }
     default:
@@ -12,6 +11,8 @@ const ngword = (state = {}, action) => {
 
 const ngwords = (state = [], action) => {
   switch (action.type) {
+    case 'INITIALIZE_EXTENSION':
+      return action.storage
     case 'ADD_NGWORD':
       return [
         ...state,

@@ -1,36 +1,18 @@
-import ngwords from '../libs/ngwords'
+const query = callback => {
+  chrome.tabs.query({url: 'http://open.open2ch.net/*'}, tabs => {
+    tabs.map(callback)
+  })
+}
 
 export const chromeMessaging = store => next => action => {
   switch(action.type) {
     case 'ADD_NGWORD':
-      ngwords.add(action.ngword)
-
-      next(action)
-
-      chrome.tabs.query({active: true}, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, action)
-      })
-      return
     case 'REMOVE_NGWORD':
-      ngwords.remove(action.ngword)
-
-      next(action)
-
-      chrome.tabs.query({active: true}, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, action)
-      })
-      return
     case 'CLEAR_NGWORDS':
-      ngwords.clear(() => {
-        next(action)
-
-        chrome.tabs.query({active: true}, (tabs) => {
-          chrome.tabs.sendMessage(tabs[0].id, action)
-        })
-      })
-      return
-    default:
       next(action)
-      return
+
+      return query(tab => chrome.tabs.sendMessage(tab.id, action))
+    default:
+      return next(action)
   }
 }

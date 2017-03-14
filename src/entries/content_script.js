@@ -1,24 +1,50 @@
-import { startObserver, abornPage } from '../libs/aborn'
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(el => {
+      chrome.storage.local.get({state: []}, storage => {
+        storage.state.forEach(o => abornComment(el, o.ngword))
+      })
+    })
+  })
+})
+
+const abornComment = (dl, ngword) => {
+  if (dl.textContent.match(ngword)) {
+    console.log(`match: ${ngword} => ${dl.textContent}`)
+    dl.dataset.aborn = ngword
+    dl.style.display = 'none'
+  }
+}
+
+const abornPage = () => {
+  document.querySelectorAll('.thread > dl').forEach(el => {
+    chrome.storage.local.get({state: []}, storage => {
+      storage.state.forEach(o => abornComment(el, o.ngword))
+    })
+  })
+}
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.type) {
     case 'ADD_NGWORD':
+      console.log('ADD_NGWORD')
       return abornPage()
     case 'REMOVE_NGWORD':
-      document.querySelectorAll(`[data-aborn="${request.ngword}"]`).forEach((el) => {
+      console.log('REMOVE_NGWORD')
+      return document.querySelectorAll(`[data-aborn="${request.ngword}"]`).forEach((el) => {
         el.style.display = 'block'
         el.removeAttribute('data-aborn')
       })
-
-      return
     case 'CLEAR_NGWORDS':
-      document.querySelectorAll('dl[data-aborn]').forEach((el) => {
+      console.log('CLEAR_NGWORDS')
+      return document.querySelectorAll('dl[data-aborn]').forEach((el) => {
         el.style.display = 'block'
         el.removeAttribute('data-aborn')
       })
-      return
   }
 })
 
-startObserver()
+const thread = document.querySelector('.thread')
+observer.observe(thread, {attributes: true, childList: true, characterData: true})
+
 abornPage()

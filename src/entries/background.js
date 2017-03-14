@@ -1,18 +1,9 @@
 import { applyMiddleware, createStore, compose } from 'redux'
 import { wrapStore } from 'react-chrome-redux'
 import createLogger from 'redux-logger'
-import { addNgWord } from '../actions'
-import ngwords from '../libs/ngwords'
+import { initializeExtension, addNgWord } from '../actions'
 import reducers from '../reducers'
 import { chromeMessaging } from '../middlewares'
-
-const initializeStore = (store) => {
-  chrome.storage.local.get({NGWords: []}, (storage) => {
-    storage.NGWords.forEach((ngword) => {
-      store.dispatch(addNgWord(ngword))
-    })
-  })
-}
 
 const store = createStore(
   require('../reducers').default,
@@ -22,7 +13,9 @@ const store = createStore(
   )
 )
 
-initializeStore(store)
+chrome.storage.local.get({state: []}, storage => {
+  store.dispatch(initializeExtension(storage.state))
+})
 
 wrapStore(store, {portName: 'OPEN2CH_NGWORD'})
 

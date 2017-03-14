@@ -1,7 +1,12 @@
-let nextActionId = 0
+export const initializeExtension = (storage) => {
+  return {
+    type: 'INITIALIZE_EXTENSION',
+    storage
+  }
+}
+
 export const addNgWord = (ngword) => {
   return {
-    id: nextActionId++,
     type: 'ADD_NGWORD',
     ngword
   }

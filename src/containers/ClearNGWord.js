@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import NGWord from '../components/NGWord'
 import { removeNgWord } from '../actions'
-import ngwords from '../libs/ngwords'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
