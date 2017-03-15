@@ -1,3 +1,5 @@
+import { Store } from 'react-chrome-redux'
+
 const observer = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
     mutation.addedNodes.forEach(el => {
@@ -13,13 +15,21 @@ const abornComment = (dl, ngword) => {
     console.log(`match: ${ngword} => ${dl.textContent}`)
     dl.dataset.aborn = ngword
     dl.style.display = 'none'
+
+    return true
   }
+  return false
 }
 
 const abornPage = () => {
+  let count = 0
   document.querySelectorAll('.thread > dl').forEach(el => {
     chrome.storage.local.get({state: []}, storage => {
-      storage.state.forEach(o => abornComment(el, o.ngword))
+      storage.state.forEach(o => {
+        if (abornComment(el, o.ngword)) {
+          ++count
+        }
+      })
     })
   })
 }

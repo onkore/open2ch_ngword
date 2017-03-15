@@ -1,17 +1,7 @@
-import { applyMiddleware, createStore, compose } from 'redux'
+import store from '../store'
 import { wrapStore } from 'react-chrome-redux'
-import createLogger from 'redux-logger'
 import { initializeExtension, addNgWord } from '../actions'
 import reducers from '../reducers'
-import { chromeMessaging } from '../middlewares'
-
-const store = createStore(
-  require('../reducers').default,
-  applyMiddleware(
-    createLogger(),
-    chromeMessaging
-  )
-)
 
 chrome.storage.local.get({state: []}, storage => {
   store.dispatch(initializeExtension(storage.state))
@@ -19,10 +9,15 @@ chrome.storage.local.get({state: []}, storage => {
 
 wrapStore(store, {portName: 'OPEN2CH_NGWORD'})
 
+const parent = chrome.contextMenus.create({
+  title: 'Open2ch NGワード',
+  contexts: ['selection'],
+  documentUrlPatterns: ['http://open.open2ch.net/*']
+})
+
 chrome.contextMenus.create({
   title: '"%s" をNGワードに追加する',
   contexts: ['selection'],
-  onclick: (info, tab) => {
-    store.dispatch(addNgWord(info.selectionText))
-  }
+  parentId: parent,
+  onclick: (info, tab) => store.dispatch(addNgWord(info.selectionText))
 })
