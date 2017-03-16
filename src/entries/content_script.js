@@ -1,60 +1,22 @@
 import { Store } from 'react-chrome-redux'
+import { abornNodeCommand, abornPageCommand } from '../commands/abornCommand'
 
 const observer = new MutationObserver(mutations => {
-  mutations.forEach(mutation => {
-    mutation.addedNodes.forEach(el => {
-      chrome.storage.local.get({state: []}, storage => {
-        storage.state.forEach(o => abornComment(el, o.ngword))
-      })
-    })
-  })
+  mutations.forEach(mutation => abornNodeCommand(mutation.addedNodes))
 })
 
-const abornComment = (dl, ngword) => {
-  if (dl.textContent.match(ngword)) {
-    console.log(`match: ${ngword} => ${dl.textContent}`)
-    dl.dataset.aborn = ngword
-    dl.style.display = 'none'
-
-    return true
-  }
-  return false
-}
-
-const abornPage = () => {
-  let count = 0
-  document.querySelectorAll('.thread > dl').forEach(el => {
-    chrome.storage.local.get({state: []}, storage => {
-      storage.state.forEach(o => {
-        if (abornComment(el, o.ngword)) {
-          ++count
-        }
-      })
-    })
-  })
-}
-
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log(request)
   switch (request.type) {
+    case 'INITIALIZE_EXTENSION':
     case 'ADD_NGWORD':
-      console.log('ADD_NGWORD')
-      return abornPage()
+      return abornPageCommand()
     case 'REMOVE_NGWORD':
-      console.log('REMOVE_NGWORD')
-      return document.querySelectorAll(`[data-aborn="${request.ngword}"]`).forEach((el) => {
-        el.style.display = 'block'
-        el.removeAttribute('data-aborn')
-      })
+      return abornPageCommand(`[data-aborn="${request.ngword}"]`)
     case 'CLEAR_NGWORDS':
-      console.log('CLEAR_NGWORDS')
-      return document.querySelectorAll('dl[data-aborn]').forEach((el) => {
-        el.style.display = 'block'
-        el.removeAttribute('data-aborn')
-      })
+      return abornPageCommand('dl[data-aborn]')
   }
 })
 
 const thread = document.querySelector('.thread')
 observer.observe(thread, {attributes: true, childList: true, characterData: true})
-
-abornPage()
