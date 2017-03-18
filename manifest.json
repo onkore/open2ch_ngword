@@ -25,6 +25,16 @@
       "matches": ["http://open.open2ch.net/*"],
       "js": [
         "build/content_script.bundle.js"
+      ],
+      "css": [
+        "src/entries/content_script.css"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["http://open.open2ch.net/test/read.cgi/*"],
+      "js": [
+        "build/content_observer.bundle.js"
       ]
     }
   ],

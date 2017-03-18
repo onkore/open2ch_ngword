@@ -1,40 +1,34 @@
-export const getStatesFromChromeStorage = () => {
-  return new Promise(resolve => {
-    chrome.storage.local.get({state: []},
-      storage => resolve(storage.state))
-  })
+import getStatesFromChromeStorage from '../storage'
+
+export const nodeListToArray = nodeList => Array.prototype.slice.call(nodeList)
+
+export const getThreadComments = (query = '.thread > dl') => {
+  return new Promise(resolve => resolve(nodeListToArray(document.querySelectorAll(query))))
 }
 
-const nodeListToArray = nodeList => Array.prototype.slice.call(nodeList)
-
-const getThreadComments = (query = '.thread > dl') => {
-  return new Promise(resolve => {
-    const comments = nodeListToArray(document.querySelectorAll(query))
-
-    resolve(comments)
-  })
+const isNgComment = (comment, ngword) => {
+  return !!comment.textContent.match(ngword)
 }
-
-const isNgComment = (text, ngword) => text.match(ngword)
 
 const filterThreadComments = results => {
   const [states, comments] = results
 
-  return comments.filter(comment => !!states.filter(state => isNgComment(comment.textContent, state.ngword)).length)
+  comments.forEach(comment => {
+    states.forEach(state => {
+      if (isNgComment(comment, state.ngword))
+        comment.dataset.ngword = state.ngword
+    })
+  })
+
+  return comments.filter(c => c.hasAttribute('data-ngword'))
 }
 
-const abornThreadComments = comments => comments.map(el => el.style.display = 'none')
-
 export const abornNodeCommand = (nodes) => {
-  return getStatesFromChromeStorage()
-    .then(states => filterThreadComments([states, nodeListToArray(nodes)]))
-    .then(abornThreadComments)
-    .then(f => console.log(f))
+  return Promise.all([getStatesFromChromeStorage(), nodes])
+    .then(filterThreadComments)
 }
 
 export const abornPageCommand = (query = '.thread > dl') => {
   return Promise.all([getStatesFromChromeStorage(), getThreadComments(query)])
     .then(filterThreadComments)
-    .then(abornThreadComments)
-    .then(found => console.log(found))
 }

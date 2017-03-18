@@ -1,22 +1,17 @@
-import { Store } from 'react-chrome-redux'
-import { abornNodeCommand, abornPageCommand } from '../commands/abornCommand'
-
-const observer = new MutationObserver(mutations => {
-  mutations.forEach(mutation => abornNodeCommand(mutation.addedNodes))
-})
+import { abornPageCommand } from '../commands/abornCommand'
+import { removeNgCommand } from '../commands/removeNgCommand'
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log(request)
+  console.log(`onMessage: type: ${request.type}`)
   switch (request.type) {
     case 'INITIALIZE_EXTENSION':
     case 'ADD_NGWORD':
       return abornPageCommand()
     case 'REMOVE_NGWORD':
-      return abornPageCommand(`[data-aborn="${request.ngword}"]`)
+      return removeNgCommand(`[data-ngword="${request.ngword}"]`)
     case 'CLEAR_NGWORDS':
-      return abornPageCommand('dl[data-aborn]')
+      return removeNgCommand('dl[data-ngword]')
   }
 })
 
-const thread = document.querySelector('.thread')
-observer.observe(thread, {attributes: true, childList: true, characterData: true})
+chrome.extension.sendRequest({type: 'initialized'})

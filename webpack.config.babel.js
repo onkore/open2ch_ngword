@@ -4,6 +4,7 @@ module.exports = {
   entry: {
     background: path.join(__dirname, 'src/entries/background.js'),
     content_script: path.join(__dirname, 'src/entries/content_script.js'),
+    content_observer: path.join(__dirname, 'src/entries/content_observer.js'),
     popup: path.join(__dirname, 'src/entries/popup.js')
   },
 
