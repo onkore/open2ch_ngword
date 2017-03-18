@@ -1,4 +1,4 @@
-import { getThreadComments } from './abornCommand'
+import { getThreadComments } from '../util'
 
 const removeNgWord = (comments) => {
   return comments.map(c => c.removeAttribute('data-ngword'))
